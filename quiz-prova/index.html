@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Embed Genially centrato</title>
+  <style>
+    /* Sfondo nero, niente scroll, spazio pieno */
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Centro verticale/orizzontale */
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Contenitore responsivo con rapporto 16:9
+       - Occupa al massimo 95% della viewport in entrambe le dimensioni
+       - Mantiene il contenuto centrato e non lo fa uscire dalla pagina
+    */
+    .stage {
+      position: relative;
+      width: min(95vw, calc(95vh * 16 / 9));
+      height: min(95vh, calc(95vw * 9 / 16));
+      background: #000; /* evita bagliori chiari in caricamento */
+    }
+
+    /* Reset bordi iframe e riempimento completo del contenitore */
+    .stage iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <!-- Tuo iframe Genially, inserito così com'è -->
+    <div style="width: 100%;">
+      <div style="position: relative; padding-bottom: 56.25%; padding-top: 0; height: 0;">
+        <iframe
+          title="Quiz con Timer"
+          frameborder="0"
+          width="1200"
+          height="675"
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+          src="https://view.genially.com/6978772f2d9a0fa62423dd1c"
+          type="text/html"
+          allowscriptaccess="always"
+          allowfullscreen="true"
+          scrolling="yes"
+          allownetworking="all">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
