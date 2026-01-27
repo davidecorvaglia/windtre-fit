@@ -1,0 +1,75 @@
+
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Effetto Assicurato</title>
+  <style>
+    /* Reset e layout full viewport */
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #000;           /* sfondo nero */
+      color: #fff;
+    }
+    body {
+      display: flex;
+      align-items: center;        /* centra verticalmente */
+      justify-content: center;    /* centra orizzontalmente */
+      overflow: hidden;           /* evita scroll */
+    }
+
+    /* Contenitore per controllare il respiro ai bordi */
+    .stage {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0; /* puoi usare padding: 2vh 2vw per più margine */
+    }
+
+    /* Il video occupa quasi tutta la pagina, senza deformarsi né essere tagliato */
+    video {
+      max-width: 95vw;   /* regola questa percentuale per “quanto” grande */
+      max-height: 95vh;  /* regola questa percentuale per “quanto” grande */
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      background: #000;  /* evita bordi chiari eventuali */
+      outline: none;
+      border: none;
+      display: block;
+    }
+
+    /* Nasconde il focus outline blu su alcuni browser quando si clicca il video */
+    video:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <!--
+      Sostituisci "video.mp4" con il nome del tuo file locale.
+      Puoi aggiungere più <source> con formati alternativi (mp4/webm/ogg).
+      'controls' mostra i controlli; puoi aggiungere 'autoplay muted playsinline' se ti serve auto-play su mobile.
+    -->
+    <video controls preload="metadata" playsinline>
+      <source src="video.mp4" type="video/mp4">
+      <!-- Esempi opzionali:
+      <source src="video.webm" type="video/webm">
+      <source src="video.ogv" type="video/ogg">
+      -->
+      Il tuo browser non supporta la riproduzione video HTML5.
+    </video>
+  </div>
+
+  <!-- (Opzionale) Adattamento reattivo sugli orientamenti molto stretti -->
+  <script>
+    // Esempio: se vuoi ridurre un po' il video in modalità landscape stretta
+    // puoi applicare classi dinamiche. Qui non strettamente necessario.
+  </script>
+</body>
+</html>
