@@ -1,53 +1,48 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>APP Protecta</title>
-  <style>
-    /* Sfondo nero, niente scroll, spazio pieno */
-    html, body {
-      height: 100%;
-      margin: 0;
-      background: #000;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    /* Centro verticale/orizzontale */
+<meta charset="UTF-8">
+<title>Pagina con iframe centrato</title>
+<style>
     body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        margin: 0;
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
     }
 
-    /* Contenitore responsivo con rapporto 16:9
-       - Occupa al massimo 95% della viewport in entrambe le dimensioni
-       - Mantiene il contenuto centrato e non lo fa uscire dalla pagina
-    */
-    .stage {
-      position: relative;
-      width: min(95vw, calc(95vh * 16 / 9));
-      height: min(95vh, calc(95vw * 9 / 16));
-      background: #000; /* evita bagliori chiari in caricamento */
+    .frame-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        position: relative;
     }
 
-    /* Reset bordi iframe e riempimento completo del contenitore */
-    .stage iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-      background: #000;
+    .frame-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
     }
-  </style>
+</style>
 </head>
 <body>
-  <div class="stage">
-    <!-- Tuo iframe Genially, inserito così com'è -->
-    <div style="width: 100%;"><div style="position: relative; padding-bottom: 100%; padding-top: 0; height: 0;"><iframe title="APP" frameborder="0" width="800" height="800" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://view.genially.com/697cc43b687f4e72020ff133" type="text/html" allowscriptaccess="always" allowfullscreen="true" scrolling="yes" allownetworking="all"></iframe> </div> </div>
-  </div>
+
+<div class="frame-container">
+    <iframe title="APP"
+        src="https://view.genially.com/697cc43b687f4e72020ff133"
+        allowfullscreen="true"
+        allowscriptaccess="always"
+        scrolling="yes"
+        allownetworking="all">
+    </iframe>
+</div>
+
 </body>
 </html>
