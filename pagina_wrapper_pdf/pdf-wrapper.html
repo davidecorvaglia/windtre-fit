@@ -1,0 +1,43 @@
+Pagina HTML Wrapper per PDF
+
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF Wrapper per Virtway</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      background: #000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- QUI CARICHI IL PDF -->
+  documento.pdf</iframe>
+
+  <!-- IMPORT OBBLIGATORIO VIRTWAY -->
+  <script type="module">
+    import Virtway from "https://static.virtway.com/webgl/libs/virtway-latest.min.js";
+
+    // (Facoltativo)
+    // Se vuoi testare che funzioni SENZA URL:
+    // Virtway.setVisibility("Cane", true);
+  </script>
+
+</body>
+</html>
