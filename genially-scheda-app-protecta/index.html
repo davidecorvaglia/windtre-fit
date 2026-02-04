@@ -44,5 +44,16 @@
     </iframe>
 </div>
 
+<!-- SCRIPT VIRTWAY AGGIUNTO -->
+<script type="module">
+    import Virtway from "https://static.virtway.com/webgl/libs/virtway-latest.min.js";
+
+    // Quando la pagina è completamente caricata
+    document.addEventListener("DOMContentLoaded", () => {
+        // Mostra l’oggetto "Cane"
+        Virtway.setVisibility("Cane", true);
+    });
+</script>
+
 </body>
 </html>
