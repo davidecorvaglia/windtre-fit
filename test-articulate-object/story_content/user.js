@@ -1,14 +1,4 @@
-function ExecuteScript(strId)
-{
-  switch (strId)
-  {
-      case "6keIEp2XevE":
-        Script1();
-        break;
-  }
-}
-
-window.InitExecuteScripts = function()
+window.InitUserScripts = function()
 {
 var player = GetPlayer();
 var object = player.object;
@@ -23,4 +13,10 @@ var showPointer = player.showPointer;
 var hidePointer = player.hidePointer;
 var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
+window.Script1 = function()
+{
+  // Invia un messaggio alla pagina genitore (il wrapper HTML)
+window.parent.postMessage("nascondiCane", "*")
+}
+
 };
