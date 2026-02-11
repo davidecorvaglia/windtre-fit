@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagina Test</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            font-size: 48px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    TEST
+
+    <!-- Import della libreria Virtway -->
+    <script type="module">
+        import Virtway from 'https://static.virtway.com/webgl/libs/virtway-latest.min.js';
+        console.log("Libreria Virtway caricata:", Virtway);
+    </script>
+
+</body>
+</html>
