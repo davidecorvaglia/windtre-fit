@@ -2,29 +2,39 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Virtway - Storyline Wrapper</title>
+    <title>Virtway Wrapper - Stabile</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000; }
-        iframe { width: 100%; height: 100%; border: none; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #000; }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
     </style>
 </head>
 <body>
 
-    <iframe src="story.html" id="storylineFrame" style="width:100%; height:100%;"></iframe>
+    <iframe src="story.html" id="storylineFrame"></iframe>
 
     <script type="module">
-        // Importazione libreria Virtway (URL ufficiale dal manuale)
+        // Importiamo la libreria con un parametro per evitare problemi di cache
         import Virtway from 'https://static.virtway.com/webgl/libs/virtway-latest.min.js';
 
-        // Restiamo in ascolto del segnale inviato da Storyline
+        console.log("Wrapper: Libreria Virtway caricata correttamente.");
+
         window.addEventListener("message", (event) => {
+            // Log per vedere se il messaggio arriva da Storyline
+            console.log("Messaggio ricevuto:", event.data);
+
+            // --- INIZIO COMANDI ---
+
             if (event.data === "nascondiCane") {
-                console.log("Segnale ricevuto! Provo a nascondere l'oggetto 'cane'...");
-                
-                // Comando dal manuale: setVisibility(nome, booleano)
                 Virtway.setVisibility("cane", false);
             }
-        });
+
+            if (event.data === "mostraCane") {
+                Virtway.setVisibility("cane", true);
+            }
+
+            // --- FINE COMANDI ---
+
+        }, false);
     </script>
 </body>
 </html>
