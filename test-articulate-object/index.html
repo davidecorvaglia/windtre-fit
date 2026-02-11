@@ -2,29 +2,29 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; font-src * data: https://fonts.gstatic.com; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline';">
-    
-    <title>Virtway Wrapper - Risoluzione CSP</title>
+    <title>Virtway - Storyline Wrapper</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #000; }
-        iframe { width: 100%; height: 100%; border: none; display: block; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <iframe src="story.html" id="storylineFrame"></iframe>
+    <iframe src="story.html" id="storylineFrame" style="width:100%; height:100%;"></iframe>
 
     <script type="module">
+        // Importazione libreria Virtway (URL ufficiale dal manuale)
         import Virtway from 'https://static.virtway.com/webgl/libs/virtway-latest.min.js';
 
+        // Restiamo in ascolto del segnale inviato da Storyline
         window.addEventListener("message", (event) => {
             if (event.data === "nascondiCane") {
+                console.log("Segnale ricevuto! Provo a nascondere l'oggetto 'cane'...");
+                
+                // Comando dal manuale: setVisibility(nome, booleano)
                 Virtway.setVisibility("cane", false);
             }
-            if (event.data === "mostraCane") {
-                Virtway.setVisibility("cane", true);
-            }
-        }, false);
+        });
     </script>
 </body>
 </html>
