@@ -15,10 +15,7 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
-  ## Toggle visibility oggetto (robusto, gestisce stato iniziale sconosciuto)
-
-```javascript
-const OBJECT_NAME = "cane";
+  const OBJECT_NAME = "cane";
 
 import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 .then((VirtwayModule) => {
@@ -62,7 +59,6 @@ import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 
 })
 .catch((err) => console.error("Errore Virtway:", err));
-```
 }
 
 };
