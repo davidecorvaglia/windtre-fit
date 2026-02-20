@@ -15,12 +15,25 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
-  var OBJECT_NAME = "protecta_hub";
+  const OBJECT_NAME = "protecta_hub";
 
-Virtway.setVisibility(OBJECT_NAME, false);
-Virtway.storage.set("inventory_" + OBJECT_NAME, "true");
+import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
+.then((VirtwayModule) => {
 
-console.log("RACCOLTA ESEGUITA:", OBJECT_NAME);
+    const Virtway = VirtwayModule.default;
+
+    if (!Virtway) {
+        console.error("Virtway non disponibile");
+        return;
+    }
+
+    Virtway.setVisibility(OBJECT_NAME, false);
+    Virtway.storage.set("inventory_" + OBJECT_NAME, "true");
+
+    console.log("RACCOLTA OK:", OBJECT_NAME);
+
+})
+.catch((err) => console.error("Errore caricamento Virtway:", err));
 }
 
 };
