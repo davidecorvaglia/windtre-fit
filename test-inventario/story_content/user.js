@@ -15,40 +15,46 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
-  const oggettiInventario = ["protecta_hub"];
+  // --- OGGETTI DA MONITORARE ---
+const oggettiInventario = ["protecta_hub"];
+
+// Memoria interna stati
+let statiPrecedenti = {};
 
 import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 .then((VirtwayModule) => {
 
-    const Virtway = VirtwayModule.default;
-    if (!Virtway) return console.error("Virtway non disponibile");
-    
     const player = GetPlayer();
 
     const sincronizzaInventario = () => {
 
         oggettiInventario.forEach(nome => {
             
-            // LEGGE DIRETTAMENTE DAL BROWSER
             const stato = localStorage.getItem("inventory_" + nome);
+            const isRaccolto = (stato === "true");
 
-            console.log("INVENTARIO: Lettura memoria per", nome, "-> Valore trovato:", stato);
+            if (statiPrecedenti[nome] !== isRaccolto) {
 
-            // Se trova la stringa "true", allora è stato raccolto
-            if (stato === "true") {
-                player.SetVar("var_inventory_" + nome, 1);
-                console.log("INVENTARIO: Settato a 1 (L'immagine DEVE accendersi)");
-            } else {
-                player.SetVar("var_inventory_" + nome, 0);
+                player.SetVar(
+                    "var_inventory_" + nome,
+                    isRaccolto ? 1 : 0
+                );
+
+                console.log("DASHBOARD:", nome, isRaccolto);
+
+                statiPrecedenti[nome] = isRaccolto;
             }
         });
     };
 
-    if (Virtway.isReady && Virtway.isReady()) {
-        sincronizzaInventario();
-    } else {
-        Virtway.onReady(sincronizzaInventario);
-    }
+    // Primo check immediato
+    sincronizzaInventario();
+
+    // Monitor continuo
+    const monitor = setInterval(sincronizzaInventario, 3000);
+
+    // Protezione: quando la slide cambia o viene chiusa, ferma il ciclo
+    window.addEventListener("beforeunload", () => clearInterval(monitor));
 
 })
 .catch((err) => console.error("Errore Virtway:", err));
