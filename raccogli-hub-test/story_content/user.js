@@ -15,35 +15,36 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
-  // --- MODIFICA QUESTO VALORE ---
-const OBJECT_NAME = "protecta_hub";
-// ------------------------------
+  const OBJECT_NAME = "protecta_hub";
+const KEY = "inventory_" + OBJECT_NAME;
 
 import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 .then((VirtwayModule) => {
 
-    const Virtway = VirtwayModule.default;
-    if (!Virtway) return console.error("Virtway non disponibile");
+  const Virtway = VirtwayModule.default;
 
-    const raccogliOggetto = () => {
+  const raccogli = () => {
 
-        // 1) Salva nello storage
-        Virtway.storage.set("inventory_" + OBJECT_NAME, true);
+    // Salvataggio memoria Virtway
+    Virtway.storage.set(KEY, "true");
 
-        // 2) Nasconde oggetto nella scena
-        Virtway.setVisibility(OBJECT_NAME, false);
+    // Salvataggio memoria persistente browser
+    localStorage.setItem(KEY, "true");
 
-        console.log("Oggetto raccolto:", OBJECT_NAME);
-    };
+    // Nasconde oggetto nella scena
+    Virtway.setVisibility(OBJECT_NAME, false);
 
-    if (Virtway.isReady && Virtway.isReady()) {
-        raccogliOggetto();
-    } else {
-        Virtway.onReady(raccogliOggetto);
-    }
+    console.log("RACCOLTA COMPLETATA:", KEY);
+  };
+
+  if (Virtway.isReady && Virtway.isReady()) {
+    raccogli();
+  } else {
+    Virtway.onReady(raccogli);
+  }
 
 })
-.catch((err) => console.error("Errore Virtway:", err));
+.catch((err)
 }
 
 };
