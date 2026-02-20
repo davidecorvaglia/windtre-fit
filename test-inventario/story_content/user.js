@@ -22,29 +22,39 @@ import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 
     const Virtway = VirtwayModule.default;
     if (!Virtway) return console.error("Virtway non disponibile");
+
     const player = GetPlayer();
 
-    // Usiamo async perché dobbiamo "aspettare" la risposta dalla scena 3D
     const sincronizzaInventario = async () => {
 
         for (const nome of oggettiInventario) {
             try {
-                // CHIEDIAMO ALLA SCENA: dammi le info su questo oggetto
+
                 const obj = await Virtway.getObject(nome);
 
-                // LOGICA: Se l'oggetto NON c'è, o è nascosto -> L'ABBIAMO RACCOLTO!
                 let raccolto = false;
-                if (!obj || obj.visible === false || obj.active === false) {
+
+                // Caso 1: oggetto non esiste più
+                if (!obj) {
                     raccolto = true;
                 }
 
-                console.log("INVENTARIO check scena per:", nome, "-> Raccolto:", raccolto);
+                // Caso 2: oggetto esiste ma non visibile
+                else if (obj.visible === false) {
+                    raccolto = true;
+                }
 
-                // Aggiorniamo Storyline di conseguenza
+                // Caso 3: oggetto disattivato
+                else if (obj.active === false) {
+                    raccolto = true;
+                }
+
+                console.log("INVENTARIO:", nome, raccolto);
+
                 player.SetVar("var_inventory_" + nome, raccolto ? 1 : 0);
 
             } catch (error) {
-                console.error("INVENTARIO: Errore lettura oggetto", nome, error);
+                console.error("Errore lettura oggetto:", nome, error);
             }
         }
     };
