@@ -16,35 +16,36 @@ var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
   const OBJECT_NAME = "protecta_hub";
-const KEY = "inventory_" + OBJECT_NAME;
 
 import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 .then((VirtwayModule) => {
 
   const Virtway = VirtwayModule.default;
 
-  const raccogli = () => {
+  console.log("STEP 1: Libreria caricata");
 
-    // Salvataggio memoria Virtway
-    Virtway.storage.set(KEY, "true");
+  const test = () => {
 
-    // Salvataggio memoria persistente browser
-    localStorage.setItem(KEY, "true");
+    console.log("STEP 2: Virtway pronto");
 
-    // Nasconde oggetto nella scena
-    Virtway.setVisibility(OBJECT_NAME, false);
+    // Test se l'oggetto esiste davvero
+    try {
+      Virtway.setVisibility(OBJECT_NAME, false);
+      console.log("STEP 3: Comando visibility inviato a", OBJECT_NAME);
+    } catch(e) {
+      console.error("ERRORE setVisibility:", e);
+    }
 
-    console.log("RACCOLTA COMPLETATA:", KEY);
   };
 
   if (Virtway.isReady && Virtway.isReady()) {
-    raccogli();
+    test();
   } else {
-    Virtway.onReady(raccogli);
+    Virtway.onReady(test);
   }
 
 })
-.catch((err)
+.catch((err) => console.error("Errore caricamento Virtway:", err));
 }
 
 };
