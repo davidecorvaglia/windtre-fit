@@ -17,23 +17,17 @@ window.Script1 = function()
 {
   const OBJECT_NAME = "protecta_hub";
 
+// Salvataggio persistente reale
+localStorage.setItem("inventory_" + OBJECT_NAME, "true");
+
+// Effetto visivo scena
 import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 .then((VirtwayModule) => {
-
     const Virtway = VirtwayModule.default;
-
-    if (!Virtway) {
-        console.error("Virtway non disponibile");
-        return;
-    }
-
     Virtway.setVisibility(OBJECT_NAME, false);
-    Virtway.storage.set("inventory_" + OBJECT_NAME, "true");
+});
 
-    console.log("RACCOLTA OK:", OBJECT_NAME);
-
-})
-.catch((err) => console.error("Errore caricamento Virtway:", err));
+console.log("RACCOLTA salvata su localStorage:", OBJECT_NAME);
 }
 
 };
