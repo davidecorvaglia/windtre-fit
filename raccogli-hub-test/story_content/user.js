@@ -15,7 +15,17 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
-  console.log(window.location.origin);
+  import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
+.then((VirtwayModule) => {
+
+    const Virtway = VirtwayModule.default;
+
+    Virtway.storage.set("inventory_protecta_hub","true");
+    Virtway.setVisibility("protecta_hub", false);
+
+    console.log("SALVATO NELLO STORAGE VIRTWAY");
+
+});
 }
 
 };
