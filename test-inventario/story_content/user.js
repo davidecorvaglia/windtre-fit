@@ -19,12 +19,27 @@ window.Script1 = function()
 .then((VirtwayModule) => {
 
     const Virtway = VirtwayModule.default;
+    const player = GetPlayer();
 
-    console.log("VALORE STORAGE:",
-        Virtway.storage.get("inventory_protecta_hub")
-    );
+    if (!Virtway) {
+        console.error("Virtway non disponibile");
+        return;
+    }
 
-});
+    // Legge lo stato salvato nello storage Virtway
+    const stato = Virtway.storage.get("inventory_protecta_hub");
+
+    console.log("STATO LETTO DA STORAGE:", stato);
+
+    // Aggiorna variabile Storyline
+    if (stato === true || stato === "true") {
+        player.SetVar("var_inventory_protecta_hub", 1);
+    } else {
+        player.SetVar("var_inventory_protecta_hub", 0);
+    }
+
+})
+.catch((err) => console.error("Errore caricamento Virtway:", err));
 }
 
 };
