@@ -22,41 +22,26 @@ import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 
     const Virtway = VirtwayModule.default;
     if (!Virtway) return console.error("Virtway non disponibile");
-
+    
     const player = GetPlayer();
 
-    const sincronizzaInventario = async () => {
+    const sincronizzaInventario = () => {
 
-        for (const nome of oggettiInventario) {
-            try {
+        oggettiInventario.forEach(nome => {
+            
+            // LEGGE DIRETTAMENTE DAL BROWSER
+            const stato = localStorage.getItem("inventory_" + nome);
 
-                const obj = await Virtway.getObject(nome);
+            console.log("INVENTARIO: Lettura memoria per", nome, "-> Valore trovato:", stato);
 
-                let raccolto = false;
-
-                // Caso 1: oggetto non esiste più
-                if (!obj) {
-                    raccolto = true;
-                }
-
-                // Caso 2: oggetto esiste ma non visibile
-                else if (obj.visible === false) {
-                    raccolto = true;
-                }
-
-                // Caso 3: oggetto disattivato
-                else if (obj.active === false) {
-                    raccolto = true;
-                }
-
-                console.log("INVENTARIO:", nome, raccolto);
-
-                player.SetVar("var_inventory_" + nome, raccolto ? 1 : 0);
-
-            } catch (error) {
-                console.error("Errore lettura oggetto:", nome, error);
+            // Se trova la stringa "true", allora è stato raccolto
+            if (stato === "true") {
+                player.SetVar("var_inventory_" + nome, 1);
+                console.log("INVENTARIO: Settato a 1 (L'immagine DEVE accendersi)");
+            } else {
+                player.SetVar("var_inventory_" + nome, 0);
             }
-        }
+        });
     };
 
     if (Virtway.isReady && Virtway.isReady()) {
