@@ -17,17 +17,17 @@ window.Script1 = function()
 {
   const OBJECT_NAME = "protecta_hub";
 
-// Salvataggio persistente reale
+// 1) salvo che è stato raccolto
 localStorage.setItem("inventory_" + OBJECT_NAME, "true");
 
-// Effetto visivo scena
+// 2) faccio sparire oggetto dalla scena
 import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 .then((VirtwayModule) => {
     const Virtway = VirtwayModule.default;
     Virtway.setVisibility(OBJECT_NAME, false);
 });
 
-console.log("RACCOLTA salvata su localStorage:", OBJECT_NAME);
+console.log("OGGETTO RACCOLTO:", OBJECT_NAME);
 }
 
 };
