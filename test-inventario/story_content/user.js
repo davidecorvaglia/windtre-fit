@@ -15,43 +15,53 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
-  // --- INSERISCI QUI IL NOME DELL'OGGETTO ---
-const oggettiInventario = ["protecta_hub"];
-// ------------------------------------------
+  const OBJECT_NAME = "protecta_hub";
+const KEY = "inventory_" + OBJECT_NAME;
+const POLL_INTERVAL = 1000; // 1 secondo
 
 import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 .then((VirtwayModule) => {
 
-    const Virtway = VirtwayModule.default;
-    if (!Virtway) return console.error("Virtway non disponibile");
+  const Virtway = VirtwayModule.default;
+  const player = GetPlayer();
 
-    const player = GetPlayer();
+  let lastKnownState = null;
 
-    const sincronizzaInventario = () => {
+  const checkInventory = () => {
 
-        oggettiInventario.forEach(nome => {
-            // Legge il dato salvato durante la raccolta
-            const stato = Virtway.storage.get("inventory_" + nome);
-            
-            // DEBUG: Stampa nella console F12 cosa ha trovato nello storage
-            console.log("INVENTARIO: Lettura storage per", nome, "-> Valore trovato:", stato);
+    // 1️⃣ Prova a leggere da Virtway
+    let stato = Virtway.storage.get(KEY);
 
-            // Controllo sicuro (accetta sia il booleano true che la stringa "true")
-            if (stato === true || stato === "true") {
-                player.SetVar("var_inventory_" + nome, 1);
-                console.log("INVENTARIO: Variabile Storyline settata a 1 (Raccolto)");
-            } else {
-                player.SetVar("var_inventory_" + nome, 0);
-                console.log("INVENTARIO: Variabile Storyline settata a 0 (Non raccolto)");
-            }
-        });
-    };
-
-    if (Virtway.isReady && Virtway.isReady()) {
-        sincronizzaInventario();
-    } else {
-        Virtway.onReady(sincronizzaInventario);
+    // 2️⃣ Fallback localStorage
+    if (stato === undefined || stato === null) {
+      stato = localStorage.getItem(KEY);
     }
+
+    const raccolto = (stato === true || stato === "true");
+
+    // Aggiorna solo se cambia stato
+    if (raccolto !== lastKnownState) {
+
+      player.SetVar(
+        "var_inventory_" + OBJECT_NAME,
+        raccolto ? 1 : 0
+      );
+
+      console.log("INVENTARIO AGGIORNATO:", raccolto);
+      lastKnownState = raccolto;
+    }
+  };
+
+  const startPolling = () => {
+    checkInventory();
+    setInterval(checkInventory, POLL_INTERVAL);
+  };
+
+  if (Virtway.isReady && Virtway.isReady()) {
+    startPolling();
+  } else {
+    Virtway.onReady(startPolling);
+  }
 
 })
 .catch((err) => console.error("Errore Virtway:", err));
