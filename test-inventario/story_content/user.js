@@ -15,31 +15,48 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
-  import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
+  const oggettiInventario = ["protecta_hub"];
+
+import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
 .then((VirtwayModule) => {
 
     const Virtway = VirtwayModule.default;
+    if (!Virtway) return console.error("Virtway non disponibile");
     const player = GetPlayer();
 
-    if (!Virtway) {
-        console.error("Virtway non disponibile");
-        return;
-    }
+    // Usiamo async perché dobbiamo "aspettare" la risposta dalla scena 3D
+    const sincronizzaInventario = async () => {
 
-    // Legge lo stato salvato nello storage Virtway
-    const stato = Virtway.storage.get("inventory_protecta_hub");
+        for (const nome of oggettiInventario) {
+            try {
+                // CHIEDIAMO ALLA SCENA: dammi le info su questo oggetto
+                const obj = await Virtway.getObject(nome);
 
-    console.log("STATO LETTO DA STORAGE:", stato);
+                // LOGICA: Se l'oggetto NON c'è, o è nascosto -> L'ABBIAMO RACCOLTO!
+                let raccolto = false;
+                if (!obj || obj.visible === false || obj.active === false) {
+                    raccolto = true;
+                }
 
-    // Aggiorna variabile Storyline
-    if (stato === true || stato === "true") {
-        player.SetVar("var_inventory_protecta_hub", 1);
+                console.log("INVENTARIO check scena per:", nome, "-> Raccolto:", raccolto);
+
+                // Aggiorniamo Storyline di conseguenza
+                player.SetVar("var_inventory_" + nome, raccolto ? 1 : 0);
+
+            } catch (error) {
+                console.error("INVENTARIO: Errore lettura oggetto", nome, error);
+            }
+        }
+    };
+
+    if (Virtway.isReady && Virtway.isReady()) {
+        sincronizzaInventario();
     } else {
-        player.SetVar("var_inventory_protecta_hub", 0);
+        Virtway.onReady(sincronizzaInventario);
     }
 
 })
-.catch((err) => console.error("Errore caricamento Virtway:", err));
+.catch((err) => console.error("Errore Virtway:", err));
 }
 
 };
