@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Inizio Sessione</title>
+    <style>
+        body { 
+            background-color: #1a1a1a; 
+            color: #ffffff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+            text-align: center; 
+        }
+        input { 
+            padding: 15px; 
+            font-size: 20px; 
+            border-radius: 8px; 
+            border: none; 
+            margin: 20px 0; 
+            text-align: center; 
+            text-transform: uppercase; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        button { 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            background-color: #00ff00; 
+            color: #000; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: transform 0.1s;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        #messaggio { 
+            margin-top: 20px; 
+            font-size: 18px; 
+            color: #00ff00; 
+            display: none; 
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Benvenuto nell'Esperienza Formativa</h2>
+    <p>Inserisci il Codice Sessione fornito dal tuo Trainer:</p>
+    
+    <input type="text" id="codiceInput" placeholder="es. AULA-01">
+    <button onclick="salvaSessione()">INIZIA</button>
+
+    <div id="messaggio">✅ Sessione configurata! Ora puoi chiudere questa finestra e iniziare l'esplorazione.</div>
+
+    <script>
+        function salvaSessione() {
+            // Recupera il valore, rimuove spazi vuoti e formatta in maiuscolo
+            const codice = document.getElementById("codiceInput").value.trim().toUpperCase();
+            
+            if (codice === "") {
+                alert("Per favore, inserisci un codice di sessione valido.");
+                return;
+            }
+
+            // SALVATAGGIO CHIAVE: Memorizza il codice nel localStorage del browser
+            localStorage.setItem("session_id", codice);
+            
+            // Aggiorna l'interfaccia per confermare l'avvenuto salvataggio
+            document.getElementById("codiceInput").style.display = "none";
+            document.querySelector("button").style.display = "none";
+            document.getElementById("messaggio").style.display = "block";
+        }
+    </script>
+</body>
+</html>
