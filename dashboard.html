@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Trainer 3D</title>
+    <style>
+        body { 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 40px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+        }
+        input { 
+            padding: 10px; 
+            font-size: 16px; 
+            border-radius: 5px; 
+            border: 1px solid #333; 
+            background: #222; 
+            color: #fff; 
+            text-transform: uppercase;
+        }
+        button { 
+            padding: 10px 20px; 
+            font-size: 16px; 
+            background: #00ffcc; 
+            color: #000; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.8; }
+        
+        /* Stile per le righe autogenerate */
+        .oggetto-riga { 
+            display: flex; 
+            align-items: center; 
+            background: #1e1e1e; 
+            padding: 15px 20px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            border-left: 5px solid #00ffcc; 
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* La spia LED accesa */
+        .spia { 
+            width: 20px; 
+            height: 20px; 
+            border-radius: 50%; 
+            background: #00ffcc; 
+            box-shadow: 0 0 15px #00ffcc; 
+            margin-right: 20px; 
+        }
+        .nome-oggetto { 
+            font-size: 18px; 
+            text-transform: capitalize; 
+            font-weight: 500;
+        }
+        .timestamp { 
+            margin-left: auto; 
+            font-size: 12px; 
+            color: #888; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Dashboard Trainer</h2>
+        <input type="text" id="sessionInput" placeholder="es. AULA-01">
+        <button id="btnConnetti">Connetti</button>
+        <div id="status" style="margin-top: 15px; color: #888; font-size: 14px;">In attesa di connessione...</div>
+    </div>
+    
+    <div id="listaOggetti"></div>
+
+    <script type="module">
+        // Importazione moduli Firebase moderni (ES Modules)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // 🚨 INCOLLA QUI IL TUO FIREBASE CONFIG DELLO STEP 0 🚨
+       const firebaseConfig = {  
+       apiKey: "AIzaSyBohW8nElI79Eg9-H0tlBhbMVB8imncTxU",  
+       authDomain: "w3-fit.firebaseapp.com",  
+       databaseURL: "https://w3-fit-default-rtdb.europe-west1.firebasedatabase.app",  
+       projectId: "w3-fit",  
+       storageBucket: "w3-fit.firebasestorage.app",  
+       messagingSenderId: "889404720272",  
+       appId: "1:889404720272:web:0f2691e6c4ecddb47ac415" 
+};
+        
+        // Inizializza l'app Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let unsubscribe = null; // Variabile per gestire la disconnessione se si cambia stanza
+
+        // Logica al click del pulsante "Connetti"
+        document.getElementById('btnConnetti').addEventListener('click', () => {
+            const sessione = document.getElementById('sessionInput').value.trim().toUpperCase();
+            if (!sessione) return alert("Inserisci un ID Sessione valido.");
+
+            // Aggiorna lo stato visivo
+            document.getElementById('status').innerHTML = `🟢 Connesso in tempo reale a: <b style="color:#00ffcc;">${sessione}</b>`;
+            const lista = document.getElementById('listaOggetti');
+            
+            // Disconnette eventuali ascolti precedenti (se il trainer cambia stanza)
+            if (unsubscribe) unsubscribe();
+
+            // Sottoscrizione al nodo specifico della sessione
+            const riferimentoSessione = ref(db, 'sessioni/' + sessione);
+            
+            unsubscribe = onValue(riferimentoSessione, (snapshot) => {
+                const dati = snapshot.val();
+                lista.innerHTML = ''; // Pulisce l'interfaccia a ogni aggiornamento
+                
+                if (!dati) {
+                    lista.innerHTML = '<p style="text-align:center; color:#666;">Nessun oggetto registrato finora.</p>';
+                    return;
+                }
+                
+                // Generazione dinamica dell'interfaccia
+                Object.keys(dati).forEach(nomeKey => {
+                    const info = dati[nomeKey];
+                    if (!info.completato) return; // Ignora se lo stato è false
+
+                    // Converte il timestamp in orario leggibile
+                    const orario = new Date(info.timestamp).toLocaleTimeString('it-IT');
+                    
+                    // Pulisce il nome (es: "chiave_inglese" -> "chiave inglese")
+                    const nomePulito = nomeKey.replace(/_/g, ' ');
+
+                    const div = document.createElement('div');
+                    div.className = 'oggetto-riga';
+                    div.innerHTML = `
+                        <div class="spia"></div>
+                        <div class="nome-oggetto">${nomePulito}</div>
+                        <div class="timestamp">${orario}</div>
+                    `;
+                    lista.appendChild(div);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
