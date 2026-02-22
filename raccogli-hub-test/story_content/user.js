@@ -15,32 +15,28 @@ var slideWidth = player.slideWidth;
 var slideHeight = player.slideHeight;
 window.Script1 = function()
 {
-  const OBJECT_NAME = "protecta_hub";
+  // 1. Nasconde l'oggetto nell'ambiente 3D (Feedback visivo per il Learner)
+Virtway.setVisibility("protecta_hub", false);
 
-import("https://static.virtway.com/webgl/libs/virtway-latest.min.js")
-.then((VirtwayModule) => {
-
-    const Virtway = VirtwayModule.default;
-    if (!Virtway) return console.error("Virtway non disponibile");
-
-    const raccogli = () => {
-        // 1. Nasconde l'oggetto dalla scena
-        Virtway.setVisibility(OBJECT_NAME, false);
-
-        // 2. SALVA NELLA MEMORIA DEL BROWSER (Infallibile)
-        localStorage.setItem("inventory_" + OBJECT_NAME, "true");
-
-        console.log("RACCOLTA: Salvato in localStorage ->", OBJECT_NAME);
+// 2. Inietta il motore Firebase e trasmette l'azione alla Dashboard
+if (!window.inviaDati) {
+    // Se il motore non è ancora stato caricato in questa sessione, lo inietta
+    const script = document.createElement("script");
+    
+    // 🚨 INSERISCI QUI L'URL REALE DEL TUO FILE SU GITHUB PAGES 🚨
+    script.src = "https://davidecorvaglia.github.io/windtre-fit/motore_firebase.js";
+    
+    script.onload = function () {
+        // Appena il motore è scaricato, spara il dato
+        window.inviaDati("protecta_hub", true);
     };
+    document.head.appendChild(script);
+} else {
+    // Se il motore era già stato caricato da un trigger precedente, spara subito il dato
+    window.inviaDati("protecta_hub", true);
+}
 
-    if (Virtway.isReady && Virtway.isReady()) {
-        raccogli();
-    } else {
-        Virtway.onReady(raccogli);
-    }
 
-})
-.catch((err) => console.error("Errore Virtway:", err));
 }
 
 };
