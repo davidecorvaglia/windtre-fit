@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Trainer - Stato Aula</title>
+    <style>
+        body { 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 40px; 
+            max-width: 600px; 
+            margin: 0 auto; 
+        }
+        .header { text-align: center; margin-bottom: 40px; }
+        input { padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #333; background: #222; color: #fff; text-transform: uppercase;}
+        button { padding: 10px 20px; font-size: 16px; background: #00ffcc; color: #000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
+        button:hover { opacity: 0.8; }
+        
+        /* Stile base per la riga (Stato Incompleto / Spento) */
+        .oggetto-riga { 
+            display: flex; 
+            align-items: center; 
+            background: #1a1a1a; 
+            padding: 15px 20px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            border-left: 5px solid #333; 
+            transition: all 0.4s ease;
+        }
+        
+        /* La spia spenta (Grigio scuro) */
+        .spia { 
+            width: 20px; 
+            height: 20px; 
+            border-radius: 50%; 
+            background: #333; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+            margin-right: 20px; 
+            transition: all 0.4s ease;
+        }
+        
+        .nome-oggetto { 
+            font-size: 18px; 
+            text-transform: capitalize; 
+            font-weight: 500;
+            color: #666; /* Testo debole quando non raccolto */
+            transition: color 0.4s ease;
+        }
+        
+        .timestamp { 
+            margin-left: auto; 
+            font-size: 13px; 
+            color: #555; 
+            font-style: italic;
+        }
+
+        /* ----- CLASSI DINAMICHE PER LO STATO "COMPLETATO" ----- */
+        .oggetto-riga.completato {
+            background: #1e1e1e;
+            border-left-color: #00ffcc;
+        }
+        .oggetto-riga.completato .spia {
+            background: #00ffcc;
+            box-shadow: 0 0 15px #00ffcc, inset 0 0 5px #fff;
+        }
+        .oggetto-riga.completato .nome-oggetto {
+            color: #ffffff; /* Testo bianco brillante */
+        }
+        .oggetto-riga.completato .timestamp {
+            color: #aaa;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Dashboard Trainer - Checklist</h2>
+        <input type="text" id="sessionInput" placeholder="es. AULA-01">
+        <button id="btnConnetti">Monitora</button>
+        <div id="status" style="margin-top: 15px; color: #888; font-size: 14px;">In attesa di connessione...</div>
+    </div>
+    
+    <div id="listaOggetti"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // 🚨 INCOLLA QUI IL TUO FIREBASE CONFIG DELLO STEP 0 🚨
+        const firebaseConfig = {  
+        apiKey: "AIzaSyBohW8nElI79Eg9-H0tlBhbMVB8imncTxU",  
+        authDomain: "w3-fit.firebaseapp.com",  
+        databaseURL: "https://w3-fit-default-rtdb.europe-west1.firebasedatabase.app",  
+        projectId: "w3-fit",  
+        storageBucket: "w3-fit.firebasestorage.app",  
+        messagingSenderId: "889404720272",  
+        appId: "1:889404720272:web:0f2691e6c4ecddb47ac415"
+}
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        let unsubscribe = null; 
+
+        // 📋 LA TUA MASTER LIST (Aggiungi qui tutti gli oggetti previsti nella scena)
+        const inventarioAtteso = [
+            "protecta_hub",
+            "protecta_tastiera",
+            "protecta_sensore",
+            "protecta_"
+        ];
+
+        document.getElementById('btnConnetti').addEventListener('click', () => {
+            const sessione = document.getElementById('sessionInput').value.trim().toUpperCase();
+            if (!sessione) return alert("Inserisci un ID Sessione valido.");
+
+            document.getElementById('status').innerHTML = `🟢 In ascolto su: <b style="color:#00ffcc;">${sessione}</b>`;
+            const lista = document.getElementById('listaOggetti');
+            
+            if (unsubscribe) unsubscribe();
+
+            const riferimentoSessione = ref(db, 'sessioni/' + sessione);
+            
+            unsubscribe = onValue(riferimentoSessione, (snapshot) => {
+                // Recupera i dati da Firebase. Se vuoto, usa un oggetto vuoto
+                const datiFirebase = snapshot.val() || {}; 
+                lista.innerHTML = ''; 
+                
+                // Genera la UI basandosi sulla TUA lista (inventarioAtteso)
+                inventarioAtteso.forEach(nomeKey => {
+                    
+                    // Verifica se l'oggetto è presente su Firebase ed è completato
+                    const info = datiFirebase[nomeKey];
+                    const isCompletato = info && info.completato === true;
+                    
+                    const nomePulito = nomeKey.replace(/_/g, ' ');
+                    
+                    // Setup iniziale: stile "Spento"
+                    let testoOrario = "In attesa...";
+                    let classiRiga = "oggetto-riga";
+                    
+                    // Se completato, applica lo stile "Acceso"
+                    if (isCompletato) {
+                        testoOrario = new Date(info.timestamp).toLocaleTimeString('it-IT');
+                        classiRiga = "oggetto-riga completato";
+                    }
+
+                    const div = document.createElement('div');
+                    div.className = classiRiga;
+                    div.innerHTML = `
+                        <div class="spia"></div>
+                        <div class="nome-oggetto">${nomePulito}</div>
+                        <div class="timestamp">${testoOrario}</div>
+                    `;
+                    lista.appendChild(div);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
